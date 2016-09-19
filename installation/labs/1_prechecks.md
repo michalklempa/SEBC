@@ -1,6 +1,6 @@
 ### `vm.swapiness`
 
- * `cat /proc/sys/vm/swappiness` with output
+ * Check swapinnes:
 ```
 [ec2-user@ip-172-31-9-86 ~]$ cat /proc/sys/vm/swappiness
 60
@@ -11,9 +11,13 @@
 vm.swappiness = 1
 ```
 
-### `noatime`g
- * first of all, added a volume `/dev/xvdf` inside the host
- * `gdisk /dev/xvdf`, o, n, enter,enter,enter,enter, w
+### `noatime` for all volumes except root
+ * first of all, add a volume `/dev/xvdf` to the host using AWS Console
+ * Create partitions
+```
+sudo gdisk /dev/xvdf
+```
+press: o, y, n, enter,enter,enter,enter, w, y
 ```
 [root@ip-172-31-9-86 ec2-user]# gdisk /dev/xvdf 
 GPT fdisk (gdisk) version 0.8.10
@@ -77,7 +81,7 @@ Do you want to proceed? (Y/N): y
 OK; writing new GUID partition table (GPT) to /dev/xvdf.
 The operation has completed successfully.
 ```
- * `mkfs.ext4 /dev/xvdf1 -m 0`
+ * make filesystem on new partition with 0% reserved space
 ```
 [root@ip-172-31-9-86 ec2-user]# mkfs.ext4 /dev/xvdf1 -m 0
 mke2fs 1.41.12 (17-May-2010)
@@ -104,7 +108,7 @@ Writing superblocks and filesystem accounting information: done
 This filesystem will be automatically checked every 25 mounts or
 180 days, whichever comes first.  Use tune2fs -c or -i to override.
 ```
- * `blkid`
+ * setup fstab to mount new filesystem.
 ```
 [root@ip-172-31-9-86 ec2-user]# blkid
 /dev/xvda1: UUID="1b7ea291-67b4-48da-802a-be4b2bcb64d5" TYPE="ext4" 
@@ -126,7 +130,7 @@ devpts                  /dev/pts                devpts  gid=5,mode=620  0 0
 sysfs                   /sys                    sysfs   defaults        0 0
 proc                    /proc                   proc    defaults        0 0
 ```
- * `mkdir -p /data/1/` and `mount -a`
+ * create mount point
 ```
 [root@ip-172-31-9-86 ec2-user]# mkdir -p /data/1
 [root@ip-172-31-9-86 ec2-user]# mount -a
@@ -140,7 +144,11 @@ none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
 /dev/xvdf1 on /data/1 type ext4 (rw,noatime)
 ```
 * "Check the user limits for maximum file descriptors and processes" - well, there are no hadoop users, yet. skipping. According to http://www.cloudera.com/documentation/enterprise/latest/topics/cm_mc_max_fd.html , this can be done later using CM.
-* DNS configured using Route 53. reverse lookups:
+* DNS configured using Route 53. Set hostname:
+```
+hostname klempa1.cdh.seb
+```
+* Check reverse lookups:
 ```
 [root@ip-172-31-9-86 ~]# host 172.31.9.86
 86.9.31.172.in-addr.arpa domain name pointer klempa1.cdh.seb.
@@ -153,7 +161,7 @@ none on /proc/sys/fs/binfmt_misc type binfmt_misc (rw)
 [root@ip-172-31-9-86 ~]# host 172.31.9.83
 83.9.31.172.in-addr.arpa domain name pointer klempa5.cdh.deb.
 ```
-forward lookups
+* Check forward lookups
 ```
 [root@ip-172-31-9-86 ~]# host klempa1.cdh.seb
 klempa1.cdh.seb has address 172.31.9.86
@@ -178,13 +186,10 @@ nscd           	0:off	1:off	2:off	3:off	4:off	5:off	6:off
 [root@ip-172-31-9-86 ec2-user]# chkconfig --list nscd
 nscd           	0:off	1:off	2:on	3:on	4:on	5:on	6:off
 ```
-* ntpd, check
+* ntpd, check and enable
 ```
 [root@ip-172-31-9-86 ec2-user]# chkconfig --list ntpd
 ntpd           	0:off	1:off	2:off	3:off	4:off	5:off	6:off
-```
-enable
-```
 [root@ip-172-31-9-86 ec2-user]# chkconfig ntpd on
 [root@ip-172-31-9-86 ec2-user]# chkconfig --list ntpd
 ntpd           	0:off	1:off	2:on	3:on	4:on	5:on	6:off
