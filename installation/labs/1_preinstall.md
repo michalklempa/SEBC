@@ -2,7 +2,7 @@
 ```
 sudo vim /etc/yum.repos.d/cloudera-manager.repo
 ```
-contains:
+should contain:
 ```
 [cloudera-manager]
 # Packages for Cloudera Manager, Version 5, on RedHat or CentOS 6 x86_64           	  
@@ -11,31 +11,26 @@ baseurl=https://archive.cloudera.com/cm5/redhat/6/x86_64/cm/5/
 gpgkey =https://archive.cloudera.com/cm5/redhat/6/x86_64/cm/RPM-GPG-KEY-cloudera    
 gpgcheck = 1
 ```
-
+* install java on CM host
 java
 ```
 sudo yum install oracle-j2sdk1.7
 ```
-
-manager
+* install cloudera manager
 ```
 sudo yum install cloudera-manager-daemons cloudera-manager-server
 ```
-
+* create database in mysql for manager
 database for manager
 ```
-/usr/share/cmf/schema/scm_prepare_database.sh
+ sudo /usr/share/cmf/schema/scm_prepare_database.sh mysql -u root -p cloudera_manager cloudera_manager u
 ```
-
+* distribute connector/j
 ```
 sudo mkdir /usr/share/java
 sudo cp mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /usr/share/java/mysql-connector-java.jar
 ```
-
-
-```
- sudo /usr/share/cmf/schema/scm_prepare_database.sh mysql -u root -p cloudera_manager cloudera_manager u
-```
+* connect to klempa1:7180, run install wizard using parcels
 * We have got cluster installed and users ready, change ulimit
 ```
 echo hdfs - nofile 32768 >> /etc/security/limits.conf
