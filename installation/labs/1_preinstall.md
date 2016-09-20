@@ -1,4 +1,4 @@
-
+* Add repo for cloudera manager
 ```
 sudo vim /etc/yum.repos.d/cloudera-manager.repo
 ```
@@ -35,4 +35,22 @@ sudo cp mysql-connector-java-5.1.39/mysql-connector-java-5.1.39-bin.jar /usr/sha
 
 ```
  sudo /usr/share/cmf/schema/scm_prepare_database.sh mysql -u root -p cloudera_manager cloudera_manager u
+```
+* We have got cluster installed and users ready, change ulimit
+```
+echo hdfs - nofile 32768 >> /etc/security/limits.conf
+echo mapred - nofile 32768 >> /etc/security/limits.conf
+echo hbase - nofile 32768 >> /etc/security/limits.conf
+echo hdfs - nproc 32768 >> /etc/security/limits.conf
+echo mapred - nproc 32768 >> /etc/security/limits.conf
+echo hbase - nproc 32768 >> /etc/security/limits.conf
+```
+* Recheck the limits
+```
+[root@klempa1 ec2-user]# echo hbase - nproc 32768 >> /etc/security/limits.conf
+[root@klempa1 ec2-user]# su - hdfs
+[hdfs@klempa1 ~]$ ulimit -Hn
+32768
+[hdfs@klempa1 ~]$ ulimit -a | grep processes
+max user processes              (-u) 32768
 ```
