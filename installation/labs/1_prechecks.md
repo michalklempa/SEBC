@@ -15,11 +15,7 @@ vm.swappiness = 1
  * first of all, add a volume `/dev/xvdf` to the host using AWS Console
  * Create partitions
 ```
-sudo gdisk /dev/xvdf
-```
-press: o, y, n, enter,enter,enter,enter, w, y
-```
-[root@ip-172-31-9-86 ec2-user]# gdisk /dev/xvdf 
+[root@ip-172-31-9-86 ec2-user]# sudo gdisk /dev/xvdf 
 GPT fdisk (gdisk) version 0.8.10
 
 Partition table scan:
@@ -83,7 +79,7 @@ The operation has completed successfully.
 ```
  * make filesystem on new partition with 0% reserved space
 ```
-[root@ip-172-31-9-86 ec2-user]# mkfs.ext4 /dev/xvdf1 -m 0
+[root@ip-172-31-9-86 ec2-user]# sudo mkfs.ext4 /dev/xvdf1 -m 0
 mke2fs 1.41.12 (17-May-2010)
 Filesystem label=
 OS type: Linux
