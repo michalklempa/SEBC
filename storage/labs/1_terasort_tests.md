@@ -838,7 +838,7 @@ sys	0m0.407s
 ```
 echo hdfs - memlock 10000000 >> /etc/security/limits.conf
 ```
-adjusted dfs.datanode.max.locked.memory using CM, see screenshot. Restarted datanodes.
+adjusted dfs.datanode.max.locked.memory using CM, see !(screenshot)[dfs.datanode.max.locked.memory.png]. Restarted datanodes.
 * setting up cache using cacheadmin
 ```
 [hdfs@klempa1 ~]$ hdfs cacheadmin -addPool testPool
@@ -1041,7 +1041,7 @@ user	0m5.361s
 sys	0m0.250s
 ```
 * documentation used: 
-    * http://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/CentralizedCacheManagement.html#Configuration 
+    * http://hadoop.apache.org/docs/r2.4.1/hadoop-project-dist/hadoop-hdfs/CentralizedCacheManagement.html#Configuration
     * http://blog.cloudera.com/blog/2014/08/new-in-cdh-5-1-hdfs-read-caching/
     * http://stackoverflow.com/a/5789425
 
