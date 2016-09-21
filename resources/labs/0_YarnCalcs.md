@@ -1,0 +1,6 @@
+`mapreduce.jobs.maps` no such property exists. There is `mapreduce.job.maps` property, hinting the map job submitter on have many maps he can push. This is used in *InputFormat classes to dictate number of splits.
+
+It may, or may not be used by input format, depends on implementation. Basically, when submitting a job without this property, number of input splits = # map tasks. When my dfs.blocksize is 128M
+I get one map task for one 128M piece of data. If there is a reasen to set mapreduce.job.maps, it is only when the input data is so small that the cluster would not be utilized. For example, for given
+configuration, it seems we have ~310 YARN containers for map jobs available (empty cluster, one container has to be dedicated to AM), if our input data is small enough not to fill this number, we can put
+at least this number as count of map jobs, to spawn as much containers as we can. Otherwise, I do not see any practical benefit of tuning this property cluster-wide, its a matter of precise mapreduce job (specified by developer while tuning his job - for example if map tasks tun too fast, he can lower the number of map tasks by recopyin the data with larger block size) and in result, it is size of input data / dfs.blocksize that determines map jobs count.
