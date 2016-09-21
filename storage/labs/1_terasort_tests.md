@@ -737,6 +737,7 @@ Successfully added cache pool testPool.
 Successfully modified cache pool testPool to have max time-to-live 15m
 ```
 * add output from last teragen
+```
 [hdfs@klempa1 ~]$ hdfs cacheadmin -addDirective -path /tmp/klempa-teragenout-10GB-32M -pool testPool
 Added cache directive 1
 ```
