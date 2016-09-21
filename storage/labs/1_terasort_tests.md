@@ -731,16 +731,25 @@ sys	0m0.423s
 [hdfs@klempa1 ~]$ hdfs cacheadmin -addPool testPool
 Successfully added cache pool testPool.
 ```
+* set the ttl for our convenience to get rid of data after some time
+```
 [hdfs@klempa1 ~]$ hdfs cacheadmin -modifyPool testPool -maxTtl 15m
 Successfully modified cache pool testPool to have max time-to-live 15m
+```
+* add output from last teragen
 [hdfs@klempa1 ~]$ hdfs cacheadmin -addDirective -path /tmp/klempa-teragenout-10GB-32M -pool testPool
-Added cache directive 2
-[hdfs@klempa1 ~]$  hdfs cacheadmin -listPools -stats testPool
+Added cache directive 1
+```
+* check the status of pools
+```
+[hdfs@klempa1 ~]$ hdfs cacheadmin -listPools -stats testPool
 Found 1 result.
 NAME      OWNER  GROUP  MODE            LIMIT            MAXTTL  BYTES_NEEDED  BYTES_CACHED  BYTES_OVERLIMIT  FILES_NEEDED  FILES_CACHED
 testPool  hdfs   hdfs   rwxr-xr-x   unlimited  000:00:15:00.000   10000000000             0                0            91             1
-
-[hdfs@klempa1 ~]$ time yarn jar /opt/cloudera/parcels/CDH-5.8.0-1.cdh5.8.0.p0.42/jars/hadoop-mapreduce-examples-*.jar terasort -Dmapreduce.job.reduces=10 /tmp/klempa-teragenout-10GB-32M /tmp/klempa-terasortout-10GB-32M-2
+```
+* run the terasort
+```
+[hdfs@klempa1 ~]$ time yarn jar /opt/cloudera/parcels/CDH-5.8.0-1.cdh5.8.0.p0.42/jars/hadoop-mapreduce-examples-*.jar terasort -Dmapreduce.job.reduces=10 /tmp/klempa-teragenout-10GB-32M /tmp/klempa-terasortout-10GB-32M
 16/09/20 16:13:47 INFO terasort.TeraSort: starting
 16/09/20 16:13:48 INFO input.FileInputFormat: Total input paths to process : 90
 Spent 277ms computing base-splits.
@@ -834,22 +843,27 @@ Spent 977ms computing partitions.
 real	8m43.098s
 user	0m9.102s
 sys	0m0.407s
-* higher running time, some gotchas - ulimit -l, dfs.datanode.max.locked.memory
+```
+* this was higher running time than without cache. There must be some gotchas, and yes, we must set ulimit -l, dfs.datanode.max.locked.memory. lets starts with limits on all nodes:
 ```
 echo hdfs - memlock 10000000 >> /etc/security/limits.conf
 ```
-adjusted dfs.datanode.max.locked.memory using CM, see !(screenshot)[dfs.datanode.max.locked.memory.png]. Restarted datanodes.
-* setting up cache using cacheadmin
+* adjusd `dfs.datanode.max.locked.memory` using CM, see !(screenshot)[dfs.datanode.max.locked.memory.png]. Restarted datanodes.
+* setting up cache once again using cacheadmin
 ```
-[hdfs@klempa1 ~]$ hdfs cacheadmin -addPool testPool
-[hdfs@klempa1 ~]$ hdfs cacheadmin -addDirective -path /tmp/klempa-terasortout-10GB-32M-1 -pool testPool
-Added cache directive 7
-[hdfs@klempa1 ~]$  hdfs cacheadmin -listPools -stats testPool
+[hdfs@klempa1 ~]$ hdfs cacheadmin -removeDirective 1
+[hdfs@klempa1 ~]$ hdfs cacheadmin -addDirective -path /tmp/klempa-terasortout-10GB-32M -pool testPool
+Added cache directive 2
+[hdfs@klempa1 ~]$ hdfs cacheadmin -listPools -stats testPool
 Found 1 result.
 NAME      OWNER  GROUP  MODE            LIMIT  MAXTTL  BYTES_NEEDED  BYTES_CACHED  BYTES_OVERLIMIT  FILES_NEEDED  FILES_CACHED
 testPool  hdfs   hdfs   rwxr-xr-x   unlimited   never   10000000099   10000000099                0            12            12
 ```
-* During job running the we check memlock values for data node:
+* start the terasort job
+```
+time yarn jar /opt/cloudera/parcels/CDH-5.8.0-1.cdh5.8.0.p0.42/jars/hadoop-mapreduce-examples-*.jar terasort -Dmapreduce.job.reduces=10 /tmp/klempa-teragenout-10GB-32M /tmp/klempa-terasortout-10GB-32M-2
+```
+* During job running the we check memlock values for data nodes:
 ```
 [root@klempa1 ec2-user]# ps ufax | grep DataNode
 root      9216  0.0  0.0 103320   852 pts/2    S+   17:47   0:00                          \_ grep DataNode
@@ -857,7 +871,7 @@ hdfs     26096  2.3  7.4 1674072 1134680 ?     SLl  17:00   1:07  \_ /usr/java/j
 [root@klempa1 ec2-user]# cat /proc/26096/status | grep VmLck
 VmLck:	  972720 kB
 ```
-* even after getting the conf right, terasort cant run faster. lets focus on some reading test (teravalidate)
+* even after getting the conf right, terasort cant run faster, still around 8 minutes:
 ```
 [hdfs@klempa1 ~]$ time yarn jar /opt/cloudera/parcels/CDH-5.8.0-1.cdh5.8.0.p0.42/jars/hadoop-mapreduce-examples-*.jar terasort -Dmapreduce.job.reduces=10 /tmp/klempa-teragenout-10GB-32M /tmp/klempa-terasortout-10GB-32M-1
 16/09/20 17:17:02 INFO terasort.TeraSort: starting
@@ -946,12 +960,20 @@ real	7m53.850s
 user	0m9.473s
 sys	0m0.466s
 ```
-* we have executed teravalidate, times:
+* lets focus on some reading test (teravalidate)
 ```
+[hdfs@klempa1 ~]$ time yarn jar /opt/cloudera/parcels/CDH-5.8.0-1.cdh5.8.0.p0.42/jars/hadoop-mapreduce-examples-*.jar teravalidate -Dmapreduce.job.reduces=10 /tmp/klempa-terasortout-10GB-32M-1 /tmp/klempa-teravalidateout
+...
 real	0m43.543s
 user	0m5.294s
 sys	0m0.265s
 ```
+* add terasort result to cache:
+```
+[hdfs@klempa1 ~]$ hdfs cacheadmin -addDirective -path /tmp/klempa-terasortout-10GB-32M-1 -pool testPool
+Added cache directive 2
+```
+* we had waited for ttl to expunge the old data from teragen, although, our cache is 10G per datanode, really big :) so data staying there wouldn't matter
 * after adding terasort result to cache, validate improves a little bit:
 ```
 [hdfs@klempa1 ~]$ time yarn jar /opt/cloudera/parcels/CDH-5.8.0-1.cdh5.8.0.p0.42/jars/hadoop-mapreduce-examples-*.jar teravalidate -Dmapreduce.job.reduces=10 /tmp/klempa-terasortout-10GB-32M-1 /tmp/klempa-teravalidateout-2
