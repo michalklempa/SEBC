@@ -849,7 +849,7 @@ sys	0m0.407s
 ```
 echo hdfs - memlock 10000000 >> /etc/security/limits.conf
 ```
-* adjusd `dfs.datanode.max.locked.memory` using CM, see !(screenshot)[dfs.datanode.max.locked.memory.png]. Restarted datanodes.
+* adjusd `dfs.datanode.max.locked.memory` using CM, see !(screenshot)[https://github.com/michalklempa/SEBC/blob/master/storage/labs/dfs.datanode.max.locked.memory.png]. Restarted datanodes.
 * setting up cache once again using cacheadmin
 ```
 [hdfs@klempa1 ~]$ hdfs cacheadmin -removeDirective 1
