@@ -732,3 +732,187 @@ Job failed as tasks failed. failedMaps:1 failedReduces:0
 		Bytes Written=2900000000
 ```
 * i have ended up in filled HDFS (each node has /data/1/ with 100GB disk attached).
+* SECOND RUN
+```
+SECOND RUN
+Mappers: 70 Reducers: 100 Container memory: 256
+
+real	5m10.459s
+user	0m14.968s
+sys	0m0.715s
+Mappers: 70 Reducers: 100 Container memory: 1024
+
+real	7m19.847s
+user	0m14.879s
+sys	0m0.678s
+Mappers: 70 Reducers: 100 Container memory: 2048
+
+real	5m32.605s
+user	0m15.088s
+sys	0m0.617s
+Mappers: 70 Reducers: 70 Container memory: 256
+
+real	4m39.348s
+user	0m14.768s
+sys	0m0.686s
+Mappers: 70 Reducers: 70 Container memory: 1024
+
+real	5m49.221s
+user	0m15.046s
+sys	0m0.625s
+Mappers: 70 Reducers: 70 Container memory: 2048
+
+real	5m15.330s
+user	0m14.781s
+sys	0m0.676s
+Mappers: 70 Reducers: 40 Container memory: 256
+
+real	4m13.839s
+user	0m14.411s
+sys	0m0.671s
+Mappers: 70 Reducers: 40 Container memory: 1024
+
+real	5m52.201s
+user	0m15.110s
+sys	0m0.664s
+Mappers: 70 Reducers: 40 Container memory: 2048
+
+real	4m25.083s
+user	0m14.395s
+sys	0m0.630s
+Mappers: 70 Reducers: 10 Container memory: 256
+
+real	4m13.231s
+user	0m15.340s
+sys	0m0.622s
+Mappers: 70 Reducers: 10 Container memory: 1024
+
+real	5m1.988s
+user	0m14.922s
+sys	0m0.616s
+Mappers: 70 Reducers: 10 Container memory: 2048
+
+real	4m53.241s
+user	0m14.347s
+sys	0m0.660s
+Mappers: 40 Reducers: 100 Container memory: 256
+
+real	4m12.908s
+user	0m14.667s
+sys	0m0.633s
+Mappers: 40 Reducers: 100 Container memory: 1024
+
+real	5m32.762s
+user	0m14.753s
+sys	0m0.648s
+Mappers: 40 Reducers: 100 Container memory: 2048
+
+real	4m55.888s
+user	0m14.893s
+sys	0m0.653s
+Mappers: 40 Reducers: 70 Container memory: 256
+
+real	4m2.085s
+user	0m14.761s
+sys	0m0.611s
+Mappers: 40 Reducers: 70 Container memory: 1024
+
+real	5m29.127s
+user	0m15.040s
+sys	0m0.694s
+Mappers: 40 Reducers: 70 Container memory: 2048
+
+real	5m4.944s
+user	0m14.593s
+sys	0m0.651s
+Mappers: 40 Reducers: 40 Container memory: 256
+
+real	4m1.575s
+user	0m15.630s
+sys	0m0.684s
+Mappers: 40 Reducers: 40 Container memory: 1024
+
+real	5m7.756s
+user	0m15.328s
+sys	0m0.701s
+Mappers: 40 Reducers: 40 Container memory: 2048
+
+real	4m21.232s
+user	0m15.337s
+sys	0m0.627s
+Mappers: 40 Reducers: 10 Container memory: 256
+
+real	4m1.700s
+user	0m14.162s
+sys	0m0.632s
+Mappers: 40 Reducers: 10 Container memory: 1024
+
+real	4m59.292s
+user	0m14.622s
+sys	0m0.659s
+Mappers: 40 Reducers: 10 Container memory: 2048
+
+real	4m16.231s
+user	0m14.631s
+sys	0m0.600s
+Mappers: 10 Reducers: 100 Container memory: 256
+
+real	3m50.459s
+user	0m14.480s
+sys	0m0.641s
+Mappers: 10 Reducers: 100 Container memory: 1024
+
+real	5m21.833s
+user	0m14.542s
+sys	0m0.630s
+Mappers: 10 Reducers: 100 Container memory: 2048
+
+real	5m4.997s
+user	0m14.524s
+sys	0m0.646s
+Mappers: 10 Reducers: 70 Container memory: 256
+
+real	3m36.506s
+user	0m13.804s
+sys	0m0.640s
+Mappers: 10 Reducers: 70 Container memory: 1024
+
+real	5m0.843s
+user	0m14.903s
+sys	0m0.628s
+Mappers: 10 Reducers: 70 Container memory: 2048
+
+real	4m34.038s
+user	0m14.805s
+sys	0m0.623s
+Mappers: 10 Reducers: 40 Container memory: 256
+
+real	3m36.336s
+user	0m14.469s
+sys	0m0.614s
+Mappers: 10 Reducers: 40 Container memory: 1024
+
+real	5m38.693s
+user	0m14.889s
+sys	0m0.644s
+Mappers: 10 Reducers: 40 Container memory: 2048
+
+real	4m39.191s
+user	0m15.485s
+sys	0m0.704s
+Mappers: 10 Reducers: 10 Container memory: 256
+
+real	3m36.647s
+user	0m15.003s
+sys	0m0.649s
+Mappers: 10 Reducers: 10 Container memory: 1024
+
+real	4m41.830s
+user	0m14.933s
+sys	0m0.633s
+Mappers: 10 Reducers: 10 Container memory: 2048
+
+real	5m25.664s
+user	0m16.227s
+sys	0m0.705s
+```
