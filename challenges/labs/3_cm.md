@@ -26,7 +26,7 @@ mysql> SHOW GRANTS FOR oozie;
 | GRANT ALL PRIVILEGES ON `oozie`.* TO 'oozie'@'%'                                                     |
 +------------------------------------------------------------------------------------------------------+
 2 rows in set (0.00 sec)
-
+```
 * hdfs
 ```
 [hdfs@klempa8 ~]$ hdfs dfs -ls /user
